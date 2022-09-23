@@ -1,9 +1,15 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect } from 'react'
 import styles from '../styles/Home.module.css'
+import { supabaseClient } from '../supabase/client'
 
-const Home: NextPage = () => {
+const Home: NextPage = ({ accessToken } : { accessToken: string }) => {
+  useEffect(() => {
+    supabaseClient.auth.api.getUser("")
+  }, [])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -67,6 +73,15 @@ const Home: NextPage = () => {
       </footer>
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  console.log(context.query)
+  return {
+    props: {
+      accessToken: ""
+    }
+  }
 }
 
 export default Home

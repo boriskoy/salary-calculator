@@ -1,4 +1,5 @@
-import { PositionsEditorType, UPDATE_FORM } from "./types"
+import { BaseSalary, Position } from "../../supabase/database/types"
+import { ADD_DELETE_POSITION, PositionsEditorType, UPDATE_FORM } from "./types"
 
 interface BaseSalaryOptional {
   position?: number
@@ -15,15 +16,19 @@ export interface PositionOptional {
 
 export type PositionsEditorState = {
   positions: PositionOptional[]
+  deletePositions: Set<Position>
+  deleteBaseSalaries: Set<BaseSalary>
 }
 
 export type PositionsEditorAction = {
   type: PositionsEditorType
-  payload: Partial<PositionsEditorState> | undefined
+  payload: Partial<PositionsEditorState> & { newDeletePosition: Position } | undefined
 }
 
 const initialState: PositionsEditorState = {
-  positions: []
+  positions: [],
+  deletePositions: new Set(),
+  deleteBaseSalaries: new Set()
 }
 
 const PositionsEditorReducer = (state: PositionsEditorState = initialState, action: PositionsEditorAction): PositionsEditorState => {
@@ -32,6 +37,13 @@ const PositionsEditorReducer = (state: PositionsEditorState = initialState, acti
       return {
         ...state,
         positions: action.payload?.positions ?? state.positions
+      }
+    case ADD_DELETE_POSITION:
+      if (action.payload?.newDeletePosition) {
+        state.deletePositions.add(action.payload.newDeletePosition)
+      } 
+      return {
+        ...state
       }
     default:
       return state

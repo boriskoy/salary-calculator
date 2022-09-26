@@ -1,3 +1,5 @@
 export const UPDATE_FORM = "UPDATE_FORM"
+export const ADD_DELETE_POSITION = "ADD_DELETE_POSITION"
+export const ADD_DELETE_BASE_SALARY = "ADD_DELETE_BASE_SALARY"
 
-export type PositionsEditorType = "UPDATE_FORM"
+export type PositionsEditorType = "UPDATE_FORM" | "ADD_DELETE_POSITION" | "ADD_DELETE_BASE_SALARY"

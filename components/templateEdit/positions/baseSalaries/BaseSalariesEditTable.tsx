@@ -4,7 +4,7 @@ import { FC, memo, ReactElement } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { useTemplateEditContext } from "../../../../hooks/templateEdit";
 import { updatePositions } from "../../../../redux/positionsEditor/actions";
-import NoData from "../../NoData";
+import NoData from "../../../NoData";
 import EditableRow from "./EditableRow";
 
 interface BaseSalariesEditTableProps {
@@ -40,7 +40,7 @@ const BaseSalariesEditTable: FC<BaseSalariesEditTableProps> = ({ positionIndex }
         <Tr>
           <Th>Years</Th>
           <Th>Salary</Th>
-          <Th>Actions</Th>
+          <Th>Remove</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -50,7 +50,7 @@ const BaseSalariesEditTable: FC<BaseSalariesEditTableProps> = ({ positionIndex }
             index={index}
             positionIndex={positionIndex}
           />
-        )) : <NoData />}
+        )) : <NoData colSpan={3} />}
       </Tbody>
     </Table>
   )

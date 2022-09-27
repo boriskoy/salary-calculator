@@ -1,6 +1,6 @@
-import { AddIcon, CheckIcon, CloseIcon, DeleteIcon, EditIcon, MinusIcon } from "@chakra-ui/icons";
-import { Tr, Td, Input, IconButton, HStack, Text } from "@chakra-ui/react";
-import { FC, memo, ReactElement, useEffect, useState } from "react";
+import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
+import { Tr, Td, Input, IconButton, Text } from "@chakra-ui/react";
+import { FC, memo, ReactElement, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { useTemplateEditContext } from "../../../hooks/templateEdit";
 import { addDeletePosition, updatePositions } from "../../../redux/positionsEditor/actions";
@@ -16,7 +16,6 @@ const EditableRow: FC<EditableRowProps> = ({ index }: EditableRowProps): ReactEl
 
   const { editing, loading } = useTemplateEditContext()
 
-  // const [position, setPosition] = useState(positions[index])
   const [showCollapse, setShowCollapse] = useState(false)
 
   const updatePositionName = (e: any) => {

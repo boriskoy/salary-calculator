@@ -1,10 +1,10 @@
 import { Tr, Td, Badge } from "@chakra-ui/react"
 import { FC, ReactElement } from "react"
 
-const NoData: FC = (): ReactElement => {
+const NoData: FC<{ colSpan: number }> = ({ colSpan }: { colSpan: number }): ReactElement => {
   return (
     <Tr>
-      <Td colSpan={3} textAlign="center">
+      <Td colSpan={colSpan} textAlign="center">
         <Badge>No data</Badge>
       </Td>
     </Tr>

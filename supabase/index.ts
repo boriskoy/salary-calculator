@@ -1,7 +1,7 @@
 import { ApiError, Provider, Session, User } from "@supabase/supabase-js";
 import { BaseSalaryOptional, PositionOptional } from "../redux/positionsEditor/reducer";
 import { supabaseClient } from "./client"
-import { Position, Template, UserTemplate } from "./database/types";
+import { BaseSalary, Benefit, Position, Template, UserTemplate } from "./database/types";
 
 export type SupabaseResponseType = Partial<{
   session: Session | null;
@@ -54,12 +54,13 @@ export const getUserTemplates = async ({ userId }: { userId: string }): Promise<
     .from<Template>("templates")
     .select()
     .in("id", userTemplates.map(userTemplate => userTemplate.template_id))
+    .order("name")
   return templatesResponse.data ?? []
 }
 
 export const getTemplatePositions = async ({ templateId }: { templateId: string }): Promise<Position[]> => {
   const response = await supabaseClient
-    .from<Position>("positions")
+    .from("positions")
     .select(`
       id,
       parent_template,
@@ -72,6 +73,30 @@ export const getTemplatePositions = async ({ templateId }: { templateId: string 
       )
     `)
     .eq("parent_template", templateId)
+    .order("name")
+    .order("years", { foreignTable: "base_salaries" })
+  return response.data ?? []
+}
+
+export const getTemplateBenefits = async ({ templateId }: { templateId: string }): Promise<Benefit[]> => {
+  const response = await supabaseClient
+    .from("benefits")
+    .select(`
+      id,
+      parent_template,
+      name,
+      type,
+      benefit_options (
+        id,
+        benefit,
+        type,
+        value,
+        salary
+      )
+    `)
+    .eq("parent_template", templateId)
+    .order("name")
+    .order("salary", { foreignTable: "benefit_options" })
   return response.data ?? []
 }
 
@@ -129,20 +154,31 @@ export const upsertBaseSalaries = async ({ baseSalaries }: { baseSalaries: BaseS
   }))
 }
 
-export const deleteTemplatePositions = async ({ positions }: { positions: Partial<Position>[] }): Promise<void> => {
+export const deleteTemplatePositions = async (positions: Position[]): Promise<void> => {
   const positionIds = positions.map(position => position.id)
-  const salariesDeleteResponse = await supabaseClient
+  const { error } = await supabaseClient
     .from("base_salaries")
     .delete()
     .in("position", positionIds)
-  if (salariesDeleteResponse.error) {
-    throw new Error(salariesDeleteResponse.error.message)
+  if (error) {
+    throw new Error(error.message)
   }
-  const positionsDeleteResponse = await supabaseClient
+  const { error: error_2 } = await supabaseClient
     .from("positions")
     .delete()
     .in("id", positionIds)
-  if (positionsDeleteResponse.error) {
-    throw new Error(positionsDeleteResponse.error.message)
+  if (error_2) {
+    throw new Error(error_2.message)
+  }
+}
+
+export const deleteTemplateBaseSalaries = async (baseSalaries: BaseSalary[]): Promise<void> => {
+  const baseSalaryIds = baseSalaries.map(baseSalary => baseSalary.id)
+  const { error } = await supabaseClient
+    .from("base_salaries")
+    .delete()
+    .in("id", baseSalaryIds)
+  if (error) {
+    throw new Error(error.message)
   }
 }

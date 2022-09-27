@@ -1,11 +1,13 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux"
 import thunk, { ThunkDispatch } from "redux-thunk"
+import BenefitsEditorReducer, { BenefitsEditorAction } from "./benefitsEditor/reducer"
 import PositionsEditorReducer, { PositionsEditorAction } from "./positionsEditor/reducer"
 
-type AppReduxAction = PositionsEditorAction
+type AppReduxAction = PositionsEditorAction | BenefitsEditorAction
 
 const rootReducer = combineReducers({
-  positionsEditor: PositionsEditorReducer
+  positionsEditor: PositionsEditorReducer,
+  benefitsEditor: BenefitsEditorReducer
 })
 
 export const store = createStore(rootReducer, {}, compose(applyMiddleware(thunk)))

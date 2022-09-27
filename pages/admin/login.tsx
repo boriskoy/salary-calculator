@@ -25,11 +25,11 @@ const Login: NextPage = (): ReactElement => {
       setLoginErrorMessage(error.message)
     } else {
       router.push({
-        pathname: "/admin",
+        pathname: "/admin/positions",
         query: {
           accessToken: session?.access_token
         }
-      }, "/admin")
+      }, "/admin/positions")
     }
   }, [email, password, router])
 

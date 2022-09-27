@@ -1,18 +1,18 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Heading, VStack } from "@chakra-ui/react";
 import { Session, User } from "@supabase/supabase-js";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import AdminNavbar from "../../components/AdminNavbar";
-import AdminTemplateTable from "../../components/templateEdit/AdminTemplateTable";
+import BenefitsEditTable from "../../components/templateEdit/benefits/BenefitsEditTable";
 import { getUserTemplates, retrieveAuthenticatedUserWithJwt } from "../../supabase";
 import { Template } from "../../supabase/database/types";
 
-interface AdminProps {
+interface BenefitsPageProps {
   serverUser: User | undefined
 }
 
-const Admin: NextPage<AdminProps> = ({ serverUser }: AdminProps): ReactElement => {
+const BenefitsPage: NextPage<BenefitsPageProps> = ({ serverUser }: BenefitsPageProps): ReactElement => {
   const [user, setUser] = useState(serverUser)
   const [templates, setTemplates] = useState<Template[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
@@ -47,9 +47,15 @@ const Admin: NextPage<AdminProps> = ({ serverUser }: AdminProps): ReactElement =
   }, [user])
 
   return (
-    <Flex width="100%" direction="column">
+    <Flex width="100vw" direction="column" alignItems="center">
       <AdminNavbar templates={templates} onSelect={setSelectedTemplate} />
-      {selectedTemplate && <AdminTemplateTable template={selectedTemplate} />}
+      {selectedTemplate && (
+        <VStack width="80%" my={8} spacing={5}>
+          <Heading size="lg" fontWeight="normal" alignSelf="start">{selectedTemplate.name}</Heading>
+          <Heading size="md" fontWeight="normal" alignSelf="start">Additional Benefits Table</Heading>
+          <BenefitsEditTable parentTemplate={selectedTemplate} />
+        </VStack>
+      )}
     </Flex>
   )
 }
@@ -59,10 +65,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (accessToken == null) {
     return {
       props: {}
-    } 
+    }
   }
   const formattedAccessToken = Array.isArray(accessToken) ? accessToken.join("") : accessToken
-  const { user, error} = await retrieveAuthenticatedUserWithJwt({ jwt: formattedAccessToken })
+  const { user, error } = await retrieveAuthenticatedUserWithJwt({ jwt: formattedAccessToken })
   if (error) {
     return {
       props: {}
@@ -75,4 +81,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export default Admin
+export default BenefitsPage

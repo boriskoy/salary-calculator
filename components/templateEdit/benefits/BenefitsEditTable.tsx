@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { TemplateEditContextProvider } from "../../../hooks/templateEdit";
 import { refreshBenefits, updateBenefits } from "../../../redux/benefitsEditor/actions";
 import { REVERT_FORM_EDITS } from "../../../redux/benefitsEditor/types";
+import { deleteTemplateBenefitOptions, deleteTemplateBenefits, upsertTemplateBenefits } from "../../../supabase";
 import { Template } from "../../../supabase/database/types";
 import NoData from "../../NoData";
 import EditableRow from "./EditableRow";
@@ -44,25 +45,27 @@ const BenefitsEditTable: FC<BenefitsEditTableProps> = ({ parentTemplate }: Benef
   }
 
   const onPersist = async (): Promise<void> => {
-    // setEditing(false)
-    // setLoading(true)
-    // const isValid = positions.every(position => {
-    //   return position.name !== "" && position.parent_template !== "" && position.base_salaries.every(baseSalary => baseSalary.years > -1 && baseSalary.salary > -1)
-    // })
-    // if (!isValid) {
-    //   setLoading(false)
-    //   alert("Must not have empty fields")
-    //   return
-    // }
-    // try {
-    //   await deleteTemplateBaseSalaries(Array.from(deleteBaseSalaries))
-    //   await deleteTemplatePositions(Array.from(deletePositions))
-    //   await upsertTemplatePositions({ positions })
-    //   dispatch(refreshPositions({ templateId: parentTemplate.id }))
-    // } catch (error: any) {
-    //   alert(error.message)
-    // }
-    // setLoading(false)
+    setEditing(false)
+    setLoading(true)
+    const isValid = benefits.every(benefit => {
+      return benefit.name !== "" &&
+        benefit.type && benefit.parent_template !== "" &&
+        benefit.benefit_options.every(benefitOption => benefitOption.type !== "" && benefitOption.value !== "" && benefitOption.salary > -1)
+    })
+    if (!isValid) {
+      setLoading(false)
+      alert("Must not have empty fields")
+      return
+    }
+    try {
+      await deleteTemplateBenefitOptions(Array.from(deleteBenefitOptions))
+      await deleteTemplateBenefits(Array.from(deleteBenefits))
+      await upsertTemplateBenefits({ benefits })
+      dispatch(refreshBenefits({ templateId: parentTemplate.id }))
+    } catch (error: any) {
+      alert(error.message)
+    }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -70,7 +73,7 @@ const BenefitsEditTable: FC<BenefitsEditTableProps> = ({ parentTemplate }: Benef
       dispatch(refreshBenefits({ templateId: parentTemplate.id }))
     }
     fetchBenefits()
-  }, [])
+  }, [dispatch, parentTemplate.id])
 
   return (
     <Box borderRadius={10} border="1px solid black" p={3} width="100%">

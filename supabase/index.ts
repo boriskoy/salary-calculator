@@ -1,7 +1,8 @@
 import { ApiError, Provider, Session, User } from "@supabase/supabase-js";
+import { BenefitOptional, BenefitOptionOptional } from "../redux/benefitsEditor/reducer";
 import { BaseSalaryOptional, PositionOptional } from "../redux/positionsEditor/reducer";
 import { supabaseClient } from "./client"
-import { BaseSalary, Benefit, Position, Template, UserTemplate } from "./database/types";
+import { BaseSalary, Benefit, BenefitOption, Position, Template, UserTemplate } from "./database/types";
 
 export type SupabaseResponseType = Partial<{
   session: Session | null;
@@ -33,7 +34,7 @@ export const signOut = async () => {
 
 export const requestResetPassword = async ({ email }: { email: string }): Promise<SupabaseResponseType> => {
   return await supabaseClient.auth.api.resetPasswordForEmail(email, {
-    redirectTo: "http://localhost:3000/admin/reset_password"
+    redirectTo: `${process.env.HOST_URL}/admin/reset_password`
   })
 }
 
@@ -124,7 +125,6 @@ export const upsertTemplatePositions = async ({ positions }: { positions: Positi
         throw new Error(error.message)
       }
       position.base_salaries.forEach(baseSalary => baseSalary.position = data[0].id)
-      console.log(position)
       await upsertBaseSalaries({ baseSalaries: position.base_salaries })
     }
   }))
@@ -147,6 +147,62 @@ export const upsertBaseSalaries = async ({ baseSalaries }: { baseSalaries: BaseS
       const { error } = await supabaseClient
         .from("base_salaries")
         .insert(baseSalary)
+      if (error) {
+        throw new Error(error.message)
+      }
+    }
+  }))
+}
+
+export const upsertTemplateBenefits = async ({ benefits }: { benefits: BenefitOptional[] }): Promise<void> => {
+  await Promise.all(benefits.map(async (benefit) => {
+    if (benefit.id != null) {
+      const { error } = await supabaseClient
+        .from("benefits")
+        .update({
+          name: benefit.name,
+          type: benefit.type
+        })
+        .eq("id", benefit.id)
+      if (error) {
+        throw new Error(error.message)
+      }
+      await upsertTemplateBenefitOptions({ benefitOptions: benefit.benefit_options })
+    } else {
+      const { data, error } = await supabaseClient
+        .from<Benefit>("benefits")
+        .insert({
+          name: benefit.name,
+          type: benefit.type,
+          parent_template: benefit.parent_template
+        })
+      if (error) {
+        throw new Error(error.message)
+      }
+      benefit.benefit_options.forEach(benefitOption => benefitOption.benefit = data[0].id)
+      await upsertTemplateBenefitOptions({ benefitOptions: benefit.benefit_options })
+    }
+  }))
+}
+
+export const upsertTemplateBenefitOptions = async ({ benefitOptions }: { benefitOptions: BenefitOptionOptional[] }): Promise<void> => {
+  await Promise.all(benefitOptions.map(async (benefitOption) => {
+    if (benefitOption.id != null) {
+      const { error } = await supabaseClient
+        .from("benefit_options")
+        .update({
+          type: benefitOption.type,
+          value: benefitOption.value,
+          salary: benefitOption.salary
+        })
+        .eq("id", benefitOption.id)
+      if (error) {
+        throw new Error(error.message)
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from("benefit_options")
+        .insert(benefitOption)
       if (error) {
         throw new Error(error.message)
       }
@@ -178,6 +234,35 @@ export const deleteTemplateBaseSalaries = async (baseSalaries: BaseSalary[]): Pr
     .from("base_salaries")
     .delete()
     .in("id", baseSalaryIds)
+  if (error) {
+    throw new Error(error.message)
+  }
+}
+
+export const deleteTemplateBenefits = async (benefits: Benefit[]): Promise<void> => {
+  const benefitIds = benefits.map(benefit => benefit.id)
+  const { error } = await supabaseClient
+    .from("benefit_options")
+    .delete()
+    .in("benefit", benefitIds)
+  if (error) {
+    throw new Error(error.message)
+  }
+  const { error: error_2 } = await supabaseClient
+    .from("benefits")
+    .delete()
+    .in("id", benefitIds)
+  if (error_2) {
+    throw new Error(error_2.message)
+  }
+}
+
+export const deleteTemplateBenefitOptions = async (benefitOptions: BenefitOption[]): Promise<void> => {
+  const benefitOptionIds = benefitOptions.map(benefitOption => benefitOption.id)
+  const { error } = await supabaseClient
+    .from("benefit_options")
+    .delete()
+    .in("id", benefitOptionIds)
   if (error) {
     throw new Error(error.message)
   }

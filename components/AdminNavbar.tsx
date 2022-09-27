@@ -1,7 +1,9 @@
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import { HStack, Menu, MenuButton, Button, MenuList, MenuItem, Text, Link } from "@chakra-ui/react"
 import NextLink from "next/link"
+import { useRouter } from "next/router"
 import { FC, memo, ReactElement } from "react"
+import { signOut } from "../supabase"
 import { Template } from "../supabase/database/types"
 
 interface AdminNavbarProps {
@@ -10,8 +12,18 @@ interface AdminNavbarProps {
 }
 
 const AdminNavbar: FC<AdminNavbarProps> = ({ templates, onSelect }: AdminNavbarProps): ReactElement => {
+  const router = useRouter()
+
   const selectTemplate = (template: Template): void => {
     onSelect(template)
+  }
+
+  const logout = async (): Promise<void> => {
+    const { error } = await signOut()
+    if (error) {
+      alert(error.message)
+    }
+    router.push("/admin/login")
   }
 
   return (
@@ -34,7 +46,7 @@ const AdminNavbar: FC<AdminNavbarProps> = ({ templates, onSelect }: AdminNavbarP
           <Link>Benefits</Link>
         </NextLink>
       </HStack>
-      <Button colorScheme="linkedin">Log out</Button>
+      <Button colorScheme="linkedin" onClick={logout}>Log out</Button>
     </HStack>
   )
 }

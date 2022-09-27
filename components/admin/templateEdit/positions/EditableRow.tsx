@@ -1,9 +1,9 @@
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { Tr, Td, Input, IconButton, Text } from "@chakra-ui/react";
 import { FC, memo, ReactElement, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { useTemplateEditContext } from "../../../hooks/templateEdit";
-import { addDeletePosition, updatePositions } from "../../../redux/positionsEditor/actions";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useTemplateEditContext } from "../../../../hooks/templateEdit";
+import { addDeletePosition, updatePositions } from "../../../../redux/positionsEditor/actions";
 import BaseSalariesEditTable from "./baseSalaries/BaseSalariesEditTable";
 
 interface EditableRowProps {

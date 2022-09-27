@@ -1,12 +1,12 @@
 import { CheckIcon, EditIcon, AddIcon } from "@chakra-ui/icons";
 import { Table, TableCaption, HStack, IconButton, Button, Thead, Tr, Th, Tbody, Box } from "@chakra-ui/react";
 import { FC, memo, ReactElement, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { TemplateEditContextProvider } from "../../../hooks/templateEdit";
-import { refreshBenefits, updateBenefits } from "../../../redux/benefitsEditor/actions";
-import { REVERT_FORM_EDITS } from "../../../redux/benefitsEditor/types";
-import { deleteTemplateBenefitOptions, deleteTemplateBenefits, upsertTemplateBenefits } from "../../../supabase";
-import { Template } from "../../../supabase/database/types";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { TemplateEditContextProvider } from "../../../../hooks/templateEdit";
+import { refreshBenefits, updateBenefits } from "../../../../redux/benefitsEditor/actions";
+import { REVERT_FORM_EDITS } from "../../../../redux/benefitsEditor/types";
+import { deleteTemplateBenefitOptions, deleteTemplateBenefits, upsertTemplateBenefits } from "../../../../supabase";
+import { Template } from "../../../../supabase/database/types";
 import NoData from "../../NoData";
 import EditableRow from "./EditableRow";
 

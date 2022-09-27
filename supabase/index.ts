@@ -42,6 +42,14 @@ export const retrieveAuthenticatedUserWithJwt = async ({ jwt }: { jwt: string })
   return await supabaseClient.auth.api.getUser(jwt)
 }
 
+export const getTemplate = async ({ templateId }: { templateId: string }): Promise<Template | null> => {
+  const response = await supabaseClient
+    .from<Template>("templates")
+    .select()
+    .eq("id", templateId)
+  return response.data ? response.data[0] : null
+}
+
 export const getUserTemplates = async ({ userId }: { userId: string }): Promise<Template[]> => {
   const userTemplateResponse = await supabaseClient
     .from<UserTemplate>("user_templates")

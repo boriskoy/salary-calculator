@@ -1,9 +1,9 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Table, Thead, Tr, Th, Tbody, TableCaption, Button, Flex } from "@chakra-ui/react";
 import { FC, memo, ReactElement } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { useTemplateEditContext } from "../../../../hooks/templateEdit";
-import { updateBenefits } from "../../../../redux/benefitsEditor/actions";
+import { useAppDispatch, useAppSelector } from "../../../../../hooks/redux";
+import { useTemplateEditContext } from "../../../../../hooks/templateEdit";
+import { updateBenefits } from "../../../../../redux/benefitsEditor/actions";
 import NoData from "../../../NoData";
 import EditableRow from "./EditableRow";
 

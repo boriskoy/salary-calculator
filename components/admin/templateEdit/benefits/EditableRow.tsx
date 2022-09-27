@@ -1,9 +1,9 @@
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { Tr, Td, Input, IconButton, Text, Select } from "@chakra-ui/react";
 import { FC, memo, ReactElement, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { useTemplateEditContext } from "../../../hooks/templateEdit";
-import { addDeleteBenefit, addDeleteBenefitOption, updateBenefits } from "../../../redux/benefitsEditor/actions";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useTemplateEditContext } from "../../../../hooks/templateEdit";
+import { addDeleteBenefit, addDeleteBenefitOption, updateBenefits } from "../../../../redux/benefitsEditor/actions";
 import BenefitOptionsEditTable from "./benefitOptions/BenefitOptionsEditTable";
 
 interface EditableRowProps {

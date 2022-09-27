@@ -1,9 +1,9 @@
 import { DeleteIcon } from "@chakra-ui/icons"
 import { Tr, Td, IconButton, Input, Text } from "@chakra-ui/react"
 import { FC, memo, ReactElement } from "react"
-import { useAppSelector, useAppDispatch } from "../../../../hooks/redux"
-import { useTemplateEditContext } from "../../../../hooks/templateEdit"
-import { addDeleteBenefitOption, updateBenefits } from "../../../../redux/benefitsEditor/actions"
+import { useAppSelector, useAppDispatch } from "../../../../../hooks/redux"
+import { useTemplateEditContext } from "../../../../../hooks/templateEdit"
+import { addDeleteBenefitOption, updateBenefits } from "../../../../../redux/benefitsEditor/actions"
 
 interface EditableRowProps {
   index: number

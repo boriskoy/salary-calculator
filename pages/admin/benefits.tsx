@@ -3,8 +3,8 @@ import { Session, User } from "@supabase/supabase-js";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
-import AdminNavbar from "../../components/AdminNavbar";
-import BenefitsEditTable from "../../components/templateEdit/benefits/BenefitsEditTable";
+import AdminNavbar from "../../components/admin/AdminNavbar";
+import BenefitsEditTable from "../../components/admin/templateEdit/benefits/BenefitsEditTable";
 import { getUserTemplates, retrieveAuthenticatedUserWithJwt } from "../../supabase";
 import { Template } from "../../supabase/database/types";
 

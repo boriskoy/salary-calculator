@@ -1,5 +1,5 @@
 import { BaseSalary, Position } from "../../supabase/database/types"
-import { ADD_DELETE_BASE_SALARY, ADD_DELETE_POSITION, COMMIT_FORM_EDITS, EDIT_FORM, PositionsEditorType, REFRESH_POSITIONS, REVERT_FORM_EDITS, UPDATE_FORM } from "./types"
+import { ADD_DELETE_BASE_SALARY, ADD_DELETE_POSITION, COMMIT_FORM_EDITS, EDIT_FORM, PositionsEditorType, REFRESH_POSITIONS, REVERT_FORM_EDITS } from "./types"
 
 export interface BaseSalaryOptional {
   id?: number

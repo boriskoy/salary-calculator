@@ -1,11 +1,13 @@
 import React, { FC, PropsWithChildren, ReactElement, useContext } from "react"
 
 const TemplateEditContext = React.createContext({
-  loading: false
+  loading: false,
+  editing: false
 })
 
 interface TemplateEditContextProviderProps extends PropsWithChildren {
   loading: boolean
+  editing: boolean
 }
 
 export const useTemplateEditContext = () => {

@@ -1,9 +1,9 @@
-import { CheckIcon, CloseIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons"
-import { Tr, Td, IconButton, Input, HStack, Text } from "@chakra-ui/react"
-import { FC, memo, ReactElement, useState } from "react"
+import { DeleteIcon } from "@chakra-ui/icons"
+import { Tr, Td, IconButton, Input, Text } from "@chakra-ui/react"
+import { FC, memo, ReactElement } from "react"
 import { useAppSelector, useAppDispatch } from "../../../../hooks/redux"
 import { useTemplateEditContext } from "../../../../hooks/templateEdit"
-import { updatePositions } from "../../../../redux/positionsEditor/actions"
+import { addDeleteBaseSalary, updatePositions } from "../../../../redux/positionsEditor/actions"
 
 interface EditableRowProps {
   index: number
@@ -14,42 +14,31 @@ const EditableRow: FC<EditableRowProps> = ({ index, positionIndex }: EditableRow
   const { positions } = useAppSelector((state) => state.positionsEditor)
   const dispatch = useAppDispatch()
 
-  const { loading } = useTemplateEditContext()
+  const { editing, loading } = useTemplateEditContext()
 
-  const [baseSalary, setBaseSalary] = useState(positions[positionIndex].base_salaries[index])
-  const [editing, setEditing] = useState(false)
-
-  const saveEdit = () => {
-    positions[positionIndex].base_salaries[index] = baseSalary
+  const updateBaseSalaryYears = (e: any) => {
+    positions[positionIndex].base_salaries[index].years = parseInt(e.target.value || "0")
     dispatch(updatePositions(positions))
-    setEditing(false)
   }
 
-  const cancelEdit = () => {
-    setBaseSalary(positions[positionIndex].base_salaries[index])
-    setEditing(false)
+  const updateBaseSalary = (e: any) => {
+    positions[positionIndex].base_salaries[index].salary = parseInt(e.target.value || "0")
+    dispatch(updatePositions(positions))
   }
 
   const onDelete = () => {
+    const target = positions[positionIndex].base_salaries[index]
+    if (target.id != null && target.position != null) {
+      dispatch(addDeleteBaseSalary({
+        id: target.id,
+        position: target.position,
+        years: target.years,
+        salary: target.salary
+      }))
+    }
     positions[positionIndex].base_salaries.splice(index, 1)
     dispatch(updatePositions(positions))
   }
-
-  const EditingActionComponent = (
-    <HStack spacing={2}>
-      {editing ? (
-        <>
-          <IconButton aria-label="Save" size="sm" icon={<CheckIcon />} isLoading={loading} onClick={saveEdit} />
-          <IconButton aria-label="Cancel" size="sm" icon={<CloseIcon />} isLoading={loading} onClick={cancelEdit} />
-        </>
-      ) : (
-        <>
-          <IconButton aria-label="Edit" size="sm" icon={<EditIcon />} isLoading={loading} onClick={() => setEditing(true)} />
-          <IconButton aria-label="Delete" size="sm" icon={<DeleteIcon />} isLoading={loading} onClick={onDelete} />
-        </>
-      )}
-    </HStack>
-  )
 
   return (
     <>
@@ -57,23 +46,25 @@ const EditableRow: FC<EditableRowProps> = ({ index, positionIndex }: EditableRow
         {editing ? (
           <>
             <Td>
-              <Input type="number" value={baseSalary.years} onChange={(e) => setBaseSalary({ ...baseSalary, years: parseInt(e.target.value) })} />
+              <Input type="number" value={positions[positionIndex].base_salaries[index].years} onChange={updateBaseSalaryYears} />
             </Td>
             <Td>
-              <Input type="number" value={baseSalary.salary} onChange={(e) => setBaseSalary({ ...baseSalary, salary: parseInt(e.target.value) })} />
+              <Input type="number" value={positions[positionIndex].base_salaries[index].salary} onChange={updateBaseSalary} />
             </Td>
           </>
         ) : (
           <>
             <Td>
-              <Text>{baseSalary.years}</Text>
+              <Text>{positions[positionIndex].base_salaries[index].years}</Text>
             </Td>
             <Td>
-              <Text>{baseSalary.salary}</Text>
+              <Text>{positions[positionIndex].base_salaries[index].salary}</Text>
             </Td>
           </>
         )}
-        <Td>{EditingActionComponent}</Td>
+        <Td>
+          <IconButton aria-label="Delete" size="sm" icon={<DeleteIcon />} isLoading={loading} onClick={onDelete} />
+        </Td>
       </Tr>
     </>
   )

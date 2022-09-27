@@ -1,9 +1,9 @@
 import { AddIcon, CheckIcon, CloseIcon, DeleteIcon, EditIcon, MinusIcon } from "@chakra-ui/icons";
 import { Tr, Td, Input, IconButton, HStack, Text } from "@chakra-ui/react";
-import { FC, memo, ReactElement, useState } from "react";
+import { FC, memo, ReactElement, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { useTemplateEditContext } from "../../../hooks/templateEdit";
-import { updatePositions } from "../../../redux/positionsEditor/actions";
+import { addDeletePosition, updatePositions } from "../../../redux/positionsEditor/actions";
 import BaseSalariesEditTable from "./baseSalaries/BaseSalariesEditTable";
 
 interface EditableRowProps {
@@ -14,43 +14,29 @@ const EditableRow: FC<EditableRowProps> = ({ index }: EditableRowProps): ReactEl
   const { positions } = useAppSelector((state) => state.positionsEditor)
   const dispatch = useAppDispatch()
 
-  const { loading } = useTemplateEditContext()
+  const { editing, loading } = useTemplateEditContext()
 
-  const [position, setPosition] = useState(positions[index])
+  // const [position, setPosition] = useState(positions[index])
   const [showCollapse, setShowCollapse] = useState(false)
-  const [editing, setEditing] = useState(false)
 
-  const saveEdit = (): void => {
-    positions[index] = position
+  const updatePositionName = (e: any) => {
+    positions[index].name = e.target.value
     dispatch(updatePositions(positions))
-    setEditing(false)
-  }
-
-  const cancelEdit = (): void => {
-    setPosition(positions[index])
-    setEditing(false)
   }
 
   const onDelete = (): void => {
+    const target = positions[index]
+    if (target.id != null) {
+      dispatch(addDeletePosition({
+        id: target.id,
+        name: target.name,
+        parent_template: target.parent_template,
+        base_salaries: []
+      }))
+    }
     positions.splice(index, 1)
     dispatch(updatePositions(positions))
   }
-
-  const EditingActionComponent = (
-    <HStack spacing={2}>
-      {editing ? (
-        <>
-          <IconButton aria-label="Save" size="sm" icon={<CheckIcon />} isLoading={loading} onClick={saveEdit} />
-          <IconButton aria-label="Cancel" size="sm" icon={<CloseIcon />} isLoading={loading} onClick={cancelEdit} />
-        </>
-      ) : (
-        <>
-          <IconButton aria-label="Edit" size="sm" icon={<EditIcon />} isLoading={loading} onClick={() => setEditing(true)} />
-          <IconButton aria-label="Delete" size="sm" icon={<DeleteIcon />} isLoading={loading} onClick={onDelete} />
-        </>
-      )}
-    </HStack>
-  )
 
   return (
     <>
@@ -64,12 +50,14 @@ const EditableRow: FC<EditableRowProps> = ({ index }: EditableRowProps): ReactEl
         </Td>
         <Td>
           {editing ? (
-            <Input isDisabled={loading} value={position.name} onChange={(e) => setPosition({ ...position, name: e.target.value })} />
+            <Input isDisabled={loading} value={positions[index].name} onChange={updatePositionName} />
           ) : (
-            <Text>{position.name}</Text>
+            <Text>{positions[index].name}</Text>
           )}
         </Td>
-        <Td>{EditingActionComponent}</Td>
+        <Td>
+          <IconButton aria-label="Delete" size="sm" icon={<DeleteIcon />} isLoading={loading} isDisabled={editing} onClick={onDelete} />
+        </Td>
       </Tr>
       {showCollapse ? (
         <Tr>

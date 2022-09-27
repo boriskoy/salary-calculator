@@ -46,7 +46,7 @@ const BaseSalariesEditTable: FC<BaseSalariesEditTableProps> = ({ positionIndex }
       <Tbody>
         {baseSalaries.length > 0 ? baseSalaries.map((baseSalary, index) => (
           <EditableRow
-            key={index}
+            key={`${baseSalary.position}-${positionIndex}-${index}`}
             index={index}
             positionIndex={positionIndex}
           />

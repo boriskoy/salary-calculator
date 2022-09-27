@@ -1,4 +1,5 @@
 import { ApiError, Provider, Session, User } from "@supabase/supabase-js";
+import { BaseSalaryOptional, PositionOptional } from "../redux/positionsEditor/reducer";
 import { supabaseClient } from "./client"
 import { Position, Template, UserTemplate } from "./database/types";
 
@@ -64,6 +65,7 @@ export const getTemplatePositions = async ({ templateId }: { templateId: string 
       parent_template,
       name,
       base_salaries (
+        id,
         position,
         years,
         salary
@@ -73,18 +75,58 @@ export const getTemplatePositions = async ({ templateId }: { templateId: string 
   return response.data ?? []
 }
 
-export const upsertTemplatePositions = async ({ positions }: { positions: Partial<Position>[] }): Promise<void> => {
-  const positionEntities = positions.map(position => ({
-    id: position.id,
-    parent_template: position.parent_template,
-    name: position.name,
+export const upsertTemplatePositions = async ({ positions }: { positions: PositionOptional[] }): Promise<void> => {
+  await Promise.all(positions.map(async (position) => {
+    if (position.id != null) {
+      const { error } = await supabaseClient
+        .from("positions")
+        .update({
+          name: position.name
+        })
+        .eq("id", position.id)
+      if (error) {
+        throw new Error(error.message)
+      }
+      await upsertBaseSalaries({ baseSalaries: position.base_salaries })
+    } else {
+      const { data, error } = await supabaseClient
+        .from<Position>("positions")
+        .insert({
+          name: position.name,
+          parent_template: position.parent_template
+        })
+      if (error) {
+        throw new Error(error.message)
+      }
+      position.base_salaries.forEach(baseSalary => baseSalary.position = data[0].id)
+      console.log(position)
+      await upsertBaseSalaries({ baseSalaries: position.base_salaries })
+    }
   }))
-  const response = await supabaseClient
-    .from("positions")
-    .upsert(positionEntities)
-  if (response.error) {
-    throw new Error(response.error.message)
-  }
+}
+
+export const upsertBaseSalaries = async ({ baseSalaries }: { baseSalaries: BaseSalaryOptional[] }): Promise<void> => {
+  await Promise.all(baseSalaries.map(async (baseSalary) => {
+    if (baseSalary.id != null) {
+      const { error } = await supabaseClient
+        .from("base_salaries")
+        .update({
+          years: baseSalary.years,
+          salary: baseSalary.salary
+        })
+        .eq("id", baseSalary.id)
+      if (error) {
+        throw new Error(error.message)
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from("base_salaries")
+        .insert(baseSalary)
+      if (error) {
+        throw new Error(error.message)
+      }
+    }
+  }))
 }
 
 export const deleteTemplatePositions = async ({ positions }: { positions: Partial<Position>[] }): Promise<void> => {

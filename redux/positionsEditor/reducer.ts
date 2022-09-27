@@ -1,7 +1,8 @@
 import { BaseSalary, Position } from "../../supabase/database/types"
-import { ADD_DELETE_POSITION, PositionsEditorType, UPDATE_FORM } from "./types"
+import { ADD_DELETE_POSITION, COMMIT_FORM_EDITS, EDIT_FORM, PositionsEditorType, REFRESH_POSITIONS, REVERT_FORM_EDITS, UPDATE_FORM } from "./types"
 
-interface BaseSalaryOptional {
+export interface BaseSalaryOptional {
+  id?: number
   position?: number
   years: number
   salary: number
@@ -15,6 +16,7 @@ export interface PositionOptional {
 }
 
 export type PositionsEditorState = {
+  previousPositions: PositionOptional[]
   positions: PositionOptional[]
   deletePositions: Set<Position>
   deleteBaseSalaries: Set<BaseSalary>
@@ -22,10 +24,14 @@ export type PositionsEditorState = {
 
 export type PositionsEditorAction = {
   type: PositionsEditorType
-  payload: Partial<PositionsEditorState> & { newDeletePosition: Position } | undefined
+  payload?: Partial<PositionsEditorState & {
+    newDeletePosition: Position
+    newDeleteBaseSalary: BaseSalary
+  }>
 }
 
 const initialState: PositionsEditorState = {
+  previousPositions: [],
   positions: [],
   deletePositions: new Set(),
   deleteBaseSalaries: new Set()
@@ -33,10 +39,27 @@ const initialState: PositionsEditorState = {
 
 const PositionsEditorReducer = (state: PositionsEditorState = initialState, action: PositionsEditorAction): PositionsEditorState => {
   switch (action.type) {
-    case UPDATE_FORM:
+    case REFRESH_POSITIONS:
       return {
         ...state,
+        previousPositions: action.payload?.previousPositions ?? state.previousPositions,
         positions: action.payload?.positions ?? state.positions
+      }
+    case EDIT_FORM:
+      return {
+        ...state,
+        previousPositions: state.previousPositions,
+        positions: action.payload?.positions ?? state.positions
+      }
+    case REVERT_FORM_EDITS:
+      return {
+        ...state,
+        positions: JSON.parse(JSON.stringify(state.previousPositions))
+      }
+    case COMMIT_FORM_EDITS:
+      return {
+        ...state,
+        previousPositions: JSON.parse(JSON.stringify(state.positions))
       }
     case ADD_DELETE_POSITION:
       if (action.payload?.newDeletePosition) {

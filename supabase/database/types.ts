@@ -16,6 +16,7 @@ export interface Position {
 }
 
 export interface BaseSalary {
+  id: number
   position: number
   years: number
   salary: number

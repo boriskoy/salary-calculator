@@ -3,8 +3,8 @@ import { HStack, Menu, MenuButton, Button, MenuList, MenuItem, Text, Link } from
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { FC, memo, ReactElement } from "react"
-import { signOut } from "../supabase"
-import { Template } from "../supabase/database/types"
+import { signOut } from "../../supabase"
+import { Template } from "../../supabase/database/types"
 
 interface AdminNavbarProps {
   templates: Template[]

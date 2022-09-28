@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <ChakraProvider>
-        <Flex minH="100vh" w="100vw" overflowX="hidden">
+        <Flex minH="100vh" w="100vw" justifyContent="center" overflowX="hidden">
           <Component {...pageProps} />
         </Flex>
       </ChakraProvider>

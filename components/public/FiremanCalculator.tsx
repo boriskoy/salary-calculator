@@ -82,14 +82,14 @@ const FiremanCalculator: FC<FiremanCalculatorProps> = ({ template, positions, be
 
   return (
     <VStack width="80%" p={10} spacing={10}>
-      <Typography.Title level={2}>Salary Calculator</Typography.Title>
+      <Typography.Title level={1}>Salary Calculator</Typography.Title>
       <VStack width="100%" spacing={3}>
         <Row style={{ width: "100%" }}>
           <Col span={8}>
             <Typography.Title level={4}>Position</Typography.Title>
           </Col>
           <Col span={16}>
-            <Select value={selectedPosition} onChange={(value) => setSelectedPosition(value)} style={{ width: "100%" }}>
+            <Select size="large" value={selectedPosition} onChange={(value) => setSelectedPosition(value)} style={{ width: "100%" }}>
               {positionNames.map(positionName => (
                 <Select.Option key={positionName} value={positionName}>{positionName}</Select.Option>
               ))}
@@ -101,7 +101,7 @@ const FiremanCalculator: FC<FiremanCalculatorProps> = ({ template, positions, be
             <Typography.Title level={4}>Years of experience</Typography.Title>
           </Col>
           <Col span={16}>
-            <Select value={selectedYear} onChange={(value) => setSelectedYear(value)} style={{ width: "100%" }}>
+            <Select size="large" value={selectedYear} onChange={(value) => setSelectedYear(value)} style={{ width: "100%" }}>
               {yearsOptions.map(yearOption => (
                 <Select.Option key={yearOption} defaultValue={undefined} value={yearOption}>{yearOption}</Select.Option>
               ))}
@@ -114,7 +114,7 @@ const FiremanCalculator: FC<FiremanCalculatorProps> = ({ template, positions, be
               <Typography.Title level={4}>{benefit.name}</Typography.Title>
             </Col>
             <Col span={16}>
-              <Select allowClear value={listBenefitValues[benefit.name]} onChange={(value) => setListBenefitValues({ ...listBenefitValues, [benefit.name]: value })} style={{ width: "100%" }}>
+              <Select size="large" allowClear value={listBenefitValues[benefit.name]} onChange={(value) => setListBenefitValues({ ...listBenefitValues, [benefit.name]: value })} style={{ width: "100%" }}>
                 {benefit.benefit_options.map(benefitOption => (
                   <Select.Option key={benefitOption.id} value={benefitOption.value}>{benefitOption.value}</Select.Option>
                 ))}
@@ -128,7 +128,7 @@ const FiremanCalculator: FC<FiremanCalculatorProps> = ({ template, positions, be
               <Typography.Title level={4}>{benefit.name}</Typography.Title>
             </Col>
             <Col span={16}>
-              <InputNumber value={scaledBenefitValues[benefit.name]} min={0} max={31} onChange={(value) => setScaledBenefitValues({ ...scaledBenefitValues, [benefit.name]: value })} />
+              <InputNumber size="large" value={scaledBenefitValues[benefit.name]} min={0} max={31} onChange={(value) => setScaledBenefitValues({ ...scaledBenefitValues, [benefit.name]: value })} />
             </Col>
           </Row>
         ))}

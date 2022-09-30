@@ -61,15 +61,15 @@ const FiremanCalculator: FC<FiremanCalculatorProps> = ({ template, positions, be
     const certificationSalary = listBenefits.find(benefit => benefit.name === "Certification")?.benefit_options.find(option => option.value === listBenefitValues.Certification)?.salary
     const educationSalary = listBenefits.find(benefit => benefit.name === "Highest Education")?.benefit_options.find(option => option.value === listBenefitValues["Highest Education"])?.salary
     if (certificationSalary != null && educationSalary != null) {
-      total += Math.max(certificationSalary * 12, educationSalary * 12)
+      total += Math.max(certificationSalary, educationSalary)
     } else if (certificationSalary != null && educationSalary == null) {
-      total += (certificationSalary * 12)
+      total += (certificationSalary)
     } else if (certificationSalary == null && educationSalary != null) {
-      total += (educationSalary * 12)
+      total += (educationSalary)
     }
     Object.entries(scaledBenefitValues).forEach(([name, value]) => {
       const salary = scaledBenefits.find(b => b.name === name)?.benefit_options[0].salary || 0
-      total += salary * (value as number) * 12
+      total += salary * (value as number)
     })
     Object.entries(checkboxBenefitValues).forEach(([name, value]) => {
       if (value) {

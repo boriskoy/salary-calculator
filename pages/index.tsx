@@ -18,7 +18,7 @@ const Calculator: FC = ({ template, positions, benefits }: CalculatorProps): Rea
   if (template.id === "abee7edf-0f55-4d5c-88fa-8f3bdb81b14c") {
     return <FiremanCalculator template={template} positions={positions} benefits={benefits} />
   } else if (template.id === "a52b4f36-1107-4a32-8dbd-d9f667f26dc9") {
-    return <PoliceCalculator />
+    return <PoliceCalculator template={template} positions={positions} benefits={benefits} />
   } else {
     return <div></div>
   }

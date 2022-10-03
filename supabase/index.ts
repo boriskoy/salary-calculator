@@ -74,6 +74,7 @@ export const getTemplatePositions = async ({ templateId }: { templateId: string 
       id,
       parent_template,
       name,
+      order,
       base_salaries (
         id,
         position,
@@ -82,7 +83,7 @@ export const getTemplatePositions = async ({ templateId }: { templateId: string 
       )
     `)
     .eq("parent_template", templateId)
-    .order("name")
+    .order("order")
     .order("years", { foreignTable: "base_salaries" })
   return response.data ?? []
 }

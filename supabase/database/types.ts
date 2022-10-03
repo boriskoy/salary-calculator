@@ -12,6 +12,7 @@ export interface Position {
   id: number
   parent_template: string
   name: string
+  order: number
   base_salaries: BaseSalary[]
 }
 

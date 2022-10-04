@@ -12,6 +12,7 @@ export interface PositionOptional {
   id?: number
   parent_template: string
   name: string
+  order: number
   base_salaries: BaseSalaryOptional[]
 }
 

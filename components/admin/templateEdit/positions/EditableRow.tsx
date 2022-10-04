@@ -30,6 +30,7 @@ const EditableRow: FC<EditableRowProps> = ({ index }: EditableRowProps): ReactEl
         id: target.id,
         name: target.name,
         parent_template: target.parent_template,
+        order: target.order,
         base_salaries: []
       }))
     }

@@ -1,5 +1,5 @@
 import { AddIcon, CheckIcon, EditIcon } from "@chakra-ui/icons"
-import { Table, TableCaption, Button, Thead, Tr, Th, Tbody, HStack, IconButton, Box } from "@chakra-ui/react"
+import { Table, TableCaption, Button, Thead, Tr, Th, Tbody, HStack, IconButton, Box, position } from "@chakra-ui/react"
 import { FC, memo, ReactElement, useState, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux"
 import { TemplateEditContextProvider } from "../../../../hooks/templateEdit"
@@ -25,6 +25,7 @@ const PositionsEditTable: FC<PositionsEditTableProps> = ({ parentTemplate }: Pos
     positions.push({
       parent_template: parentTemplate.id,
       name: "Placeholder",
+      order: positions.length > 0 ? positions[positions.length - 1].order + 1 : 1,
       base_salaries: []
     })
     dispatch(updatePositions(positions))

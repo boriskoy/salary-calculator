@@ -1,4 +1,4 @@
-import { Divider, Grid, Stat, StatLabel, StatNumber, VStack } from "@chakra-ui/react"
+import { Divider, Grid, Stat, StatLabel, StatNumber, useMediaQuery, VStack } from "@chakra-ui/react"
 import React, { FC, ReactElement, useEffect, useMemo, useState } from "react"
 import { Template, Position, Benefit } from "../../supabase/database/types"
 import { Checkbox, Col, Row, InputNumber, Select, Typography } from "antd"
@@ -41,6 +41,8 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
     }
     return "$" + (annualPay / 365 / 8).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }, [annualPay])
+
+  const [isSmallSize] = useMediaQuery('(min-width: 560px)')
 
   useEffect(() => {
     setYearsOptions(positionsObject[selectedPosition].map(baseSalary => baseSalary.years))
@@ -89,13 +91,13 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
 
   return (
     <VStack width="80%" p={10} spacing={10}>
-      <Typography.Title level={1}>Salary Calculator</Typography.Title>
-      <VStack width="100%" spacing={3}>
+      <Typography.Title level={isSmallSize ? 1 : 3}>Salary Calculator</Typography.Title>
+      <VStack width="100%" spacing={isSmallSize ? 3 : 5}>
         <Row style={{ width: "100%" }}>
-          <Col span={8}>
-            <Typography.Title level={4}>Position</Typography.Title>
+          <Col span={isSmallSize ? 8 : 24}>
+            <Typography.Title level={isSmallSize ? 4 : 5}>Position</Typography.Title>
           </Col>
-          <Col span={16}>
+          <Col span={isSmallSize ? 16 : 24}>
             <Select size="large" value={selectedPosition} onChange={(value) => setSelectedPosition(value)} style={{ width: "100%" }}>
               {positionNames.map(positionName => (
                 <Select.Option key={positionName} value={positionName}>{positionName}</Select.Option>
@@ -104,10 +106,10 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
           </Col>
         </Row>
         <Row style={{ width: "100%" }}>
-          <Col span={8}>
-            <Typography.Title level={4}>Years of experience</Typography.Title>
+          <Col span={isSmallSize ? 8 : 24}>
+            <Typography.Title level={isSmallSize ? 4 : 5}>Years of experience</Typography.Title>
           </Col>
-          <Col span={16}>
+          <Col span={isSmallSize ? 16 : 24}>
             <Select size="large" value={selectedYear} onChange={(value) => setSelectedYear(value)} style={{ width: "100%" }}>
               {yearsOptions.map(yearOption => (
                 <Select.Option key={yearOption} defaultValue={undefined} value={yearOption}>{yearOption}</Select.Option>
@@ -117,10 +119,10 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
         </Row>
         {listBenefits.map(benefit => (
           <Row key={benefit.id} style={{ width: "100%" }}>
-            <Col span={8}>
-              <Typography.Title level={4}>{benefit.name}</Typography.Title>
+            <Col span={isSmallSize ? 8 : 24}>
+              <Typography.Title level={isSmallSize ? 4 : 5}>{benefit.name}</Typography.Title>
             </Col>
-            <Col span={16}>
+            <Col span={isSmallSize ? 16 : 24}>
               <Select size="large" allowClear value={listBenefitValues[benefit.name]} onChange={(value) => setListBenefitValues({ ...listBenefitValues, [benefit.name]: value })} style={{ width: "100%" }}>
                 {benefit.benefit_options.map(benefitOption => (
                   <Select.Option key={benefitOption.id} value={benefitOption.value}>{benefitOption.value}</Select.Option>
@@ -131,27 +133,27 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
         ))}
         {scaledBenefits.map(benefit => (
           <Row key={benefit.id} style={{ width: "100%" }}>
-            <Col span={8}>
-              <Typography.Title level={4}>{benefit.name}</Typography.Title>
+            <Col span={isSmallSize ? 8 : 24}>
+              <Typography.Title level={isSmallSize ? 4 : 5}>{benefit.name}</Typography.Title>
             </Col>
-            <Col span={16}>
+            <Col span={isSmallSize ? 16 : 24}>
               <InputNumber size="large" value={scaledBenefitValues[benefit.name]} min={0} max={31} onChange={(value) => setScaledBenefitValues({ ...scaledBenefitValues, [benefit.name]: value })} />
             </Col>
           </Row>
         ))}
         <Row style={{ width: "100%" }}>
-          <Col span={8}>
-            <Typography.Title level={4}>Incentive Pay</Typography.Title>
+          <Col span={isSmallSize ? 8 : 24}>
+            <Typography.Title level={isSmallSize ? 4 : 5}>Incentive Pay</Typography.Title>
           </Col>
-          <Col span={16}>
+          <Col span={isSmallSize ? 16 : 24}>
             {checkboxBenefits.map(benefit => (
-              <Checkbox key={benefit.id} checked={checkboxBenefitValues[benefit.name]} onChange={(e) => setCheckboxBenefitValues({ ...checkboxBenefitValues, [benefit.name]: e.target.checked })}>{benefit.name}</Checkbox>
+              <Checkbox style={isSmallSize ? {} : { marginLeft: 0 }} key={benefit.id} checked={checkboxBenefitValues[benefit.name]} onChange={(e) => setCheckboxBenefitValues({ ...checkboxBenefitValues, [benefit.name]: e.target.checked })}>{benefit.name}</Checkbox>
             ))}
           </Col>
         </Row>
       </VStack>
       <Divider />
-      <Grid templateColumns="repeat(2, 1fr)" gap={3} width="80%">
+      <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }} gap={3} width="80%">
         <Stat textAlign="center">
           <StatLabel fontSize="2xl" fontWeight="normal">Annual Salary</StatLabel>
           <StatNumber fontSize="6xl" fontWeight="bold">{salaryString}</StatNumber>

@@ -87,7 +87,7 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
       }
     })
     setAnnualPay(total)
-  }, [selectedPosition, selectedYear, listBenefitValues, scaledBenefitValues, checkboxBenefitValues])
+  }, [selectedPosition, selectedYear, listBenefitValues, scaledBenefitValues, checkboxBenefitValues, positionsObject, listBenefits, scaledBenefits, checkboxBenefits])
 
   return (
     <VStack width="80%" p={10} spacing={10}>
@@ -107,7 +107,7 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
         </Row>
         <Row style={{ width: "100%" }}>
           <Col span={isSmallSize ? 8 : 24}>
-            <Typography.Title level={isSmallSize ? 4 : 5}>Years of experience</Typography.Title>
+            <Typography.Title level={isSmallSize ? 4 : 5}>Years of Service</Typography.Title>
           </Col>
           <Col span={isSmallSize ? 16 : 24}>
             <Select size="large" value={selectedYear} onChange={(value) => setSelectedYear(value)} style={{ width: "100%" }}>

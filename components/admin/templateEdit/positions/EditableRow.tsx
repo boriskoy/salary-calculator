@@ -1,5 +1,5 @@
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
-import { Tr, Td, Input, IconButton, Text } from "@chakra-ui/react";
+import { Tr, Td, Input, IconButton, Text, NumberInput, NumberInputField } from "@chakra-ui/react";
 import { FC, memo, ReactElement, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { useTemplateEditContext } from "../../../../hooks/templateEdit";
@@ -20,6 +20,11 @@ const EditableRow: FC<EditableRowProps> = ({ index }: EditableRowProps): ReactEl
 
   const updatePositionName = (e: any) => {
     positions[index].name = e.target.value
+    dispatch(updatePositions(positions))
+  }
+
+  const updatePositionOrder = (_: string, value: number) => {
+    positions[index].order = !isNaN(value) ? value : 0
     dispatch(updatePositions(positions))
   }
 
@@ -48,13 +53,27 @@ const EditableRow: FC<EditableRowProps> = ({ index }: EditableRowProps): ReactEl
             <IconButton aria-label="Expand" size="sm" icon={<AddIcon />} onClick={() => setShowCollapse(!showCollapse)} />
           )}
         </Td>
-        <Td>
-          {editing ? (
-            <Input isDisabled={loading} value={positions[index].name} onChange={updatePositionName} />
-          ) : (
-            <Text>{positions[index].name}</Text>
-          )}
-        </Td>
+        {editing ? (
+          <>
+            <Td>
+              <Input isDisabled={loading} value={positions[index].name} onChange={updatePositionName} />
+            </Td>
+            <Td>
+              <NumberInput min={0} value={positions[index].order} onChange={updatePositionOrder}>
+                <NumberInputField />
+              </NumberInput>
+            </Td>
+          </>
+        ) : (
+          <>
+            <Td>
+              <Text>{positions[index].name}</Text>
+            </Td>
+            <Td>
+              <Text>{positions[index].order}</Text>
+            </Td>
+          </>
+        )}
         <Td>
           <IconButton aria-label="Delete" size="sm" icon={<DeleteIcon />} isLoading={loading} isDisabled={editing} onClick={onDelete} />
         </Td>

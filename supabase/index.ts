@@ -116,7 +116,8 @@ export const upsertTemplatePositions = async ({ positions }: { positions: Positi
       const { error } = await supabaseClient
         .from("positions")
         .update({
-          name: position.name
+          name: position.name,
+          order: position.order
         })
         .eq("id", position.id)
       if (error) {

@@ -86,6 +86,7 @@ const PositionsEditTable: FC<PositionsEditTableProps> = ({ parentTemplate }: Pos
           <Tr>
             <Th></Th>
             <Th>Position Name</Th>
+            <Th>Order</Th>
             <Th>Remove</Th>
           </Tr>
         </Thead>

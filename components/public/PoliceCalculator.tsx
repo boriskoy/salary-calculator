@@ -39,7 +39,7 @@ const PoliceCalculator: FC<PoliceCalculatorProps> = ({ template, positions, bene
     if (annualPay == null) {
       return "N/A"
     }
-    return "$" + (annualPay / 365 / 8).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    return "$" + (annualPay / 2080).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }, [annualPay])
 
   const [isSmallSize] = useMediaQuery('(min-width: 560px)')
